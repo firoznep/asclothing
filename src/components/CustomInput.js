@@ -5,28 +5,17 @@ const CustomInput = (props) => {
   return (
     <View
       style={{
-        marginLeft: 35,
-        marginRight: 35,
+        marginHorizontal: 15,
         marginTop: 10,
-        borderColor: '#007FFF',
+        borderColor: '#689F38',
         borderWidth: 1,
       }}>
       <TextInput
         underlineColorAndroid="transparent"
-        placeholder={props.placeholder}
-        placeholderTextColor="#007FFF"
-        keyboardType={props.keyboardType}
-        onChangeText={props.onChangeText}
-        returnKeyType={props.returnKeyType}
-        numberOfLines={props.numberOfLines}
-        multiline={props.multiline}
-        onSubmitEditing={props.onSubmitEditing}
-        style={props.style}
+        placeholderTextColor="#A1887F"
         blurOnSubmit={false}
-        value={props.value}
-        defaultValue={props.defaultValue}
-        onTouchStart={props.onTouchStart}
         autoCapitalize="none"
+        {...props}
       />
     </View>
   );

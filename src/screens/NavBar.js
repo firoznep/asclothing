@@ -9,7 +9,16 @@ const Stack = createStackNavigator();
 const NavBar = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          // title: 'Home',
+          headerStyle: {backgroundColor: '#0288D1'},
+          headerTintColor: '#fff',
+          headerTitleStyle: {fontWeight: 'bold'},
+        }}
+      />
       <Stack.Screen name="ItemName" component={ItemName} />
     </Stack.Navigator>
   );

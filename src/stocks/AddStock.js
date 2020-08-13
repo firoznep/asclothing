@@ -16,8 +16,6 @@ import {connect} from 'react-redux';
 var db = openDatabase({name: 'stockDatabase.db'});
 
 const AddStock = ({navigation, stock}) => {
-  let arr = stock.map((t) => t.item_name);
-
   let [itemName, setItemName] = useState('');
   let [itemQuantity, setItemQuantity] = useState('');
   let [description, setDescription] = useState('No Description!');
@@ -33,6 +31,8 @@ const AddStock = ({navigation, stock}) => {
       alert('Please fill Quantity');
       return;
     }
+
+    // let arr = stock.map((t) => t.item_name);
 
     // if (arr.includes(itemName)) {
     //   Alert.alert(

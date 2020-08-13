@@ -1,13 +1,17 @@
 import React, {useEffect} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
 import {addItem} from '../redux/action/StockAction';
 
-import {openDatabase} from 'react-native-sqlite-storage';
-
 import {connect} from 'react-redux';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
+import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'stockDatabase.db'});
 
 const Dashboard = ({stock, setStock, navigation}) => {
@@ -44,35 +48,51 @@ const Dashboard = ({stock, setStock, navigation}) => {
 
   return (
     <ScrollView>
-      <TouchableOpacity
-        style={{borderWidth: 2, padding: 15}}
-        onPress={() =>
-          navigation.navigate('StockManage', {screen: 'StocksDetail'})
-        }>
-        <Text>
-          Total Pieces =
-          <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
-            {' '}
-            {grandTotal.reduce(totalItems, 0)}{' '}
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.touchContainer}
+          onPress={() =>
+            navigation.navigate('StockManage', {screen: 'StocksDetail'})
+          }>
+          <Text>
+            Total Pieces =
+            <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
+              {' '}
+              {grandTotal.reduce(totalItems, 0)}{' '}
+            </Text>
           </Text>
-          avalable.
-        </Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{borderWidth: 2, padding: 15, marginVertical: 10}}
-        onPress={() => navigation.navigate('ItemName')}>
-        <Text>
-          Total Plazzo =
-          <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
-            {' '}
-            {getTotalItemRate()}{' '}
+        <TouchableOpacity
+          style={styles.touchContainer}
+          onPress={() => navigation.navigate('ItemName')}>
+          <Text>
+            Total Plazzo =
+            <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
+              {' '}
+              {getTotalItemRate()}{' '}
+            </Text>
           </Text>
-        </Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  touchContainer: {
+    borderWidth: 1,
+    padding: 5,
+    marginVertical: 10,
+  },
+});
 
 const mapStateToProps = (state) => ({
   stock: state.stock,

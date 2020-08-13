@@ -41,7 +41,7 @@ const ItemName = ({stock}) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Text style={{fontSize: 24}}>total: </Text>
+        <Text style={{fontSize: 24}}>Total {inputText} = </Text>
         <Text style={{fontSize: 32, color: 'green'}}>{totalItems}</Text>
       </View>
     </ScrollView>
