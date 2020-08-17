@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, SafeAreaView, RefreshControl, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  RefreshControl,
+  FlatList,
+  ScrollView,
+} from 'react-native';
 import {connect} from 'react-redux';
 
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -27,12 +34,6 @@ const StockDetail = ({stock, setStock, setResetState}) => {
     setRefreshing(false);
   }, [refreshing]);
 
-  let listViewItemSeparator = () => {
-    return (
-      <View style={{height: 2, width: '100%', backgroundColor: '#0288D1'}} />
-    );
-  };
-
   let listItemView = (item) => {
     return (
       <View
@@ -44,23 +45,67 @@ const StockDetail = ({stock, setStock, setResetState}) => {
           borderWidth: 2,
           margin: 10,
         }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        {/* ITEM DATE AND ID */}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            borderBottomWidth: 1,
+            marginBottom: 10,
+          }}>
           <Text>Item Id = {item.item_id}</Text>
-          <Text style={{borderWidth: 1, padding: 2}}>{item.date}</Text>
+          <Text style={{padding: 2}}>{item.date}</Text>
         </View>
+
+        {/* ITEM NAME */}
         <Text>
           Item Name ={' '}
           <Text style={{color: '#E91E63', fontWeight: 'bold'}}>
             {item.item_name}
           </Text>
         </Text>
+
+        {/* ITEM QUANTITY */}
         <Text>
-          Item Quantity ={' '}
+          Item in stock ={' '}
           <Text style={{fontSize: 20, color: '#C2185B', fontWeight: 'bold'}}>
-            {item.item_quantity}
+            {item.quantity}
           </Text>
         </Text>
-        <Text style={{borderWidth: 1, padding: 5, margin: 10}}>
+
+        {/* ITEM COLOR */}
+        <Text>
+          Color = <Text>{item.item_color}</Text>
+        </Text>
+
+        {/* ITEM size */}
+        <Text>
+          Size = <Text>{item.item_size}</Text>
+        </Text>
+
+        {/* ITEM unit */}
+        <Text>
+          Unit = <Text>{item.unit}</Text>
+        </Text>
+
+        {/* ITEM unit rate */}
+        <Text>
+          U. R. = <Text>U3{item.unit_rate}6R</Text>
+        </Text>
+
+        {/* TOTAL AMOUNT*/}
+        <Text>
+          T. A. = <Text>A9{item.total_amount}5T</Text>
+        </Text>
+
+        {/*  */}
+        <Text
+          style={{
+            borderWidth: 1,
+            padding: 5,
+            margin: 10,
+            alignSelf: 'center',
+          }}>
           {item.description}
         </Text>
       </View>
@@ -74,10 +119,9 @@ const StockDetail = ({stock, setStock, setResetState}) => {
           flex: 1,
           backgroundColor: 'white',
         }}>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'green'}}>
           <FlatList
             data={stock}
-            // ItemSeparatorComponent={listViewItemSeparator}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => listItemView(item)}
             refreshControl={
@@ -91,7 +135,7 @@ const StockDetail = ({stock, setStock, setResetState}) => {
 };
 
 const mapStateToProps = (state) => ({
-  stock: state.stock,
+  stock: state.stock.reverse(),
 });
 
 const mapDispatchToProps = (dispatch) => ({

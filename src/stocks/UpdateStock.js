@@ -16,16 +16,25 @@ var db = openDatabase({name: 'stockDatabase.db'});
 
 const UpdateStock = ({navigation}) => {
   let [itemId, setItemId] = useState('');
+  // let [date, setDate] = useState(new Date().toDateString());
   let [itemName, setItemName] = useState('');
+  let [itemColor, setItemColor] = useState('color not specify');
+  let [itemSize, setItemSize] = useState('free size');
+  let [unit, setUnit] = useState('pcs');
+  let [unitRate, setUnitRate] = useState('');
   let [quantity, setQuantity] = useState('');
-  let [description, setDescription] = useState('');
-  let [date, setDate] = useState(new Date().toDateString());
+  let [description, setDescription] = useState('no description!');
 
-  let updateAllStates = (name, quantity, description) => {
+  let tAmount = unitRate * quantity;
+
+  let updateAllStates = (name, color, size, unit, rate, qnt, description) => {
     setItemName(name);
-    setQuantity(quantity);
+    setItemColor(color);
+    setItemSize(size);
+    setUnit(unit);
+    setUnitRate(rate);
+    setQuantity(qnt);
     setDescription(description);
-    // setDescription(date);
   };
 
   let searchItem = () => {
@@ -40,13 +49,16 @@ const UpdateStock = ({navigation}) => {
             let res = results.rows.item(0);
             updateAllStates(
               res.item_name,
-              res.item_quantity,
+              res.item_color,
+              res.item_size,
+              res.unit,
+              res.unit_rate,
+              res.quantity,
               res.description,
-              // res.date,
             );
           } else {
             alert('No item found');
-            updateAllStates('', '', '');
+            updateAllStates('', '', '', '', '', '', '');
           }
         },
       );
@@ -54,8 +66,6 @@ const UpdateStock = ({navigation}) => {
   };
 
   let updateStock = () => {
-    // console.log(itemId, itemName, quantity, description);
-
     if (!itemId) {
       alert('Please fill item id');
       return;
@@ -68,25 +78,37 @@ const UpdateStock = ({navigation}) => {
       alert('Please fill quantity');
       return;
     }
-    if (!description) {
-      alert('Please fill description');
+    if (!unitRate) {
+      alert('Please fill rate');
       return;
     }
 
     db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE stock_table set item_name=?, item_quantity=? , description=?, date=? where item_id=?',
-        [itemName, quantity, description, date, itemId],
+        'UPDATE stock_table set item_name=?, item_color=?, item_size=?, unit=?, unit_rate=?, quantity=?, total_amount=? , description=? where item_id=?',
+        [
+          itemName,
+          itemColor,
+          itemSize,
+          unit,
+          unitRate,
+          quantity,
+          tAmount,
+          description,
+          itemId,
+        ],
+
         (tx, results) => {
           // console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
+            updateAllStates('', '', '', '', '', '', '', '');
             Alert.alert(
               'Success',
               'item updated successfully',
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Dashboard'),
+                  onPress: () => navigation.navigate('StocksDetail'),
                 },
               ],
               {cancelable: false},
@@ -105,26 +127,60 @@ const UpdateStock = ({navigation}) => {
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
+              {/* ID FIELD */}
               <CustomInput
                 placeholder="Enter item Id"
                 style={{padding: 10}}
                 onChangeText={(itemId) => setItemId(itemId)}
               />
               <CustomBtn title="Search item" onBtnPress={searchItem} />
+
+              {/* upadate field */}
               <CustomInput
                 placeholder="Enter Name"
                 value={itemName}
                 style={{padding: 10}}
                 onChangeText={(itemName) => setItemName(itemName)}
               />
+
               <CustomInput
-                placeholder="Enter quantity"
+                placeholder="color"
+                value={itemColor}
+                style={{padding: 10}}
+                onChangeText={(clr) => setItemColor(clr)}
+              />
+
+              <CustomInput
+                placeholder="size"
+                value={itemSize}
+                style={{padding: 10}}
+                onChangeText={(sz) => setItemSize(sz)}
+              />
+
+              <CustomInput
+                placeholder="unit"
+                value={unit}
+                style={{padding: 10}}
+                onChangeText={(u) => setUnit(u)}
+              />
+
+              <CustomInput
+                placeholder="unit rate"
+                value={'' + unitRate}
+                style={{padding: 10}}
+                onChangeText={(ur) => setUnitRate(ur)}
+                keyboardType="numeric"
+              />
+
+              <CustomInput
+                placeholder="quantity"
                 value={'' + quantity}
                 onChangeText={(quantity) => setQuantity(quantity)}
                 maxLength={10}
                 style={{padding: 10}}
                 keyboardType="numeric"
               />
+
               <CustomInput
                 value={description}
                 placeholder="description"

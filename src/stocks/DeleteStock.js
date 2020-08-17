@@ -5,12 +5,15 @@ import {Text, View, Alert, SafeAreaView} from 'react-native';
 import CustomInput from '../components/CustomInput';
 import CustomBtn from '../components/CustomBtn';
 
+import {Picker} from '@react-native-community/picker';
+
 // database
 import {openDatabase} from 'react-native-sqlite-storage';
+import {connect} from 'react-redux';
 var db = openDatabase({name: 'stockDatabase.db'});
 
-const DeleteStock = ({navigation}) => {
-  let [itemName, setItemName] = useState('');
+const DeleteStock = ({navigation, stock}) => {
+  let [itemName, setItemName] = useState('Select name');
   let [itemId, setItemId] = useState('');
 
   let deleteStock = () => {
@@ -109,17 +112,37 @@ const DeleteStock = ({navigation}) => {
     });
   };
 
+  // FOR GETTING ITEM_NAME FROM STOCK AND PASSED TO PICKER
+  let nameArr = stock.map((val) => val.item_name);
+  let arrSet = new Set(nameArr);
+  let uniqueArr = [...arrSet];
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <CustomInput
-            placeholder="Enter item name"
-            onChangeText={(itemName) => setItemName(itemName)}
-            style={{padding: 10}}
-            value={itemName}
-            onFocus={() => setItemId('')}
-          />
+        <View style={{flex: 1}}>
+          {/* SIZE PICKER*/}
+          <View
+            style={{
+              marginHorizontal: 15,
+              marginTop: 10,
+              borderColor: '#689F38',
+              borderWidth: 1,
+            }}>
+            <Picker
+              // style={{your_style}}
+              mode="dropdown"
+              selectedValue={itemName}
+              onValueChange={(n) => {
+                setItemName(n);
+              }}>
+              <Picker.Item label="Select name" value="" />
+              {uniqueArr.map((elm) => {
+                return <Picker.Item label={elm} value={elm} key={elm} />;
+              })}
+            </Picker>
+          </View>
+
           <Text style={{fontSize: 24}}>OR</Text>
 
           <CustomInput
@@ -140,4 +163,8 @@ const DeleteStock = ({navigation}) => {
   );
 };
 
-export default DeleteStock;
+const mapStateToProps = (state) => ({
+  stock: state.stock,
+});
+
+export default connect(mapStateToProps)(DeleteStock);

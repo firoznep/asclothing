@@ -3,6 +3,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Dashboard from './Dashboard';
 import ItemName from './ItemName';
+import SearchItemsPage from './SearchItemsPage';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ const NavBar = () => {
         }}
       />
       <Stack.Screen name="ItemName" component={ItemName} />
+      <Stack.Screen name="SearchItemsPage" component={SearchItemsPage} />
     </Stack.Navigator>
   );
 };

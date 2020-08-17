@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 
 import {addItem} from '../redux/action/StockAction';
@@ -16,6 +17,7 @@ let db = openDatabase({name: 'stockDatabase.db'});
 
 const Dashboard = ({stock, setStock, navigation}) => {
   useEffect(() => {
+    // store data into reucer store
     showAllData();
   }, []);
 
@@ -32,50 +34,94 @@ const Dashboard = ({stock, setStock, navigation}) => {
   };
 
   // get total plazzo
-  const getTotalItemRate = () => {
-    let output = stock.filter((arr) => arr.item_name == stock[0].item_name);
+  const GetTotalItemRate = () => {
     let total = 0;
 
-    for (let i = 0; i < output.length; i++) {
-      total += output[i].item_quantity;
+    if (stock[stock.length - 1] === undefined) {
+      total = 0;
+      return <Text>{total}</Text>;
+    } else {
+      let output = stock.filter(
+        (arr) => arr.item_name == stock[stock.length - 1].item_name,
+      );
+
+      for (let i = 0; i < output.length; i++) {
+        total += output[i].quantity;
+      }
     }
 
-    return total;
+    return (
+      <Text>
+        {stock[stock.length - 1].item_name} = {total}
+      </Text>
+    );
   };
 
-  const grandTotal = stock.map((t) => t.item_quantity);
+  const grandTotal = stock.map((t) => t.quantity);
   const totalItems = (total, num) => total + num;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.touchContainer}
-          onPress={() =>
-            navigation.navigate('StockManage', {screen: 'StocksDetail'})
-          }>
-          <Text>
-            Total Pieces =
-            <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
-              {' '}
-              {grandTotal.reduce(totalItems, 0)}{' '}
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() =>
+              navigation.navigate('StockManage', {screen: 'StocksDetail'})
+            }>
+            <Text>
+              Total Pieces =
+              <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
+                {' '}
+                {grandTotal.reduce(totalItems, 0)}{' '}
+              </Text>
             </Text>
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.touchContainer}
-          onPress={() => navigation.navigate('ItemName')}>
-          <Text>
-            Total Plazzo =
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => navigation.navigate('ItemName')}>
+            {/* <Text> */}
+
             <Text style={{fontSize: 20, color: 'green', fontWeight: 'bold'}}>
               {' '}
-              {getTotalItemRate()}{' '}
+              <GetTotalItemRate />{' '}
             </Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            {/* </Text> */}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => navigation.navigate('SearchItemsPage')}>
+            <Text>Search Item</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => alert('pressed')}>
+            <Text>On Testing</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => alert('pressed')}>
+            <Text>On Testing</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => alert('pressed')}>
+            <Text>On Testing</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => alert('pressed')}>
+            <Text>On Testing</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -83,6 +129,7 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 10,
@@ -91,6 +138,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     marginVertical: 10,
+    height: 80,
+    minWidth: '40%',
   },
 });
 

@@ -1,0 +1,20 @@
+// let arr = stock.map((t) => t.item_name);
+
+    // if (arr.includes(itemName)) {
+    //   Alert.alert(
+    //     'Name already exist!',
+    //     'Do you want to Update ?',
+    //     [
+    //       {
+    //         text: 'Cancel',
+    //         onPress: () => {
+    //           return;
+    //         },
+    //         style: 'cancel',
+    //       },
+    //       {text: 'OK', onPress: () => navigation.navigate('UpdateStock')},
+    //     ],
+    //     {cancelable: false},
+    //   );
+    //   return;
+    // }
