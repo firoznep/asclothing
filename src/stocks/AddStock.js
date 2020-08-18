@@ -5,14 +5,18 @@ import {
   KeyboardAvoidingView,
   Alert,
   SafeAreaView,
+  Image,
+  Text,
 } from 'react-native';
 import {Picker} from '@react-native-community/picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import CustomBtn from '../components/CustomBtn';
 import CustomInput from '../components/CustomInput';
 
 import {openDatabase} from 'react-native-sqlite-storage';
 import {connect} from 'react-redux';
+import {MY_PIC_DATA} from '../imagePicker/imageData';
 
 var db = openDatabase({name: 'stockDatabase.db'});
 
@@ -25,6 +29,42 @@ const AddStock = ({navigation, stock}) => {
   let [unit, setUnit] = useState('pcs');
   let [unitRate, setUnitRate] = useState(0);
   let [description, setDescription] = useState('no description!');
+
+  // image selector
+  let [imgMime, setImgMime] = useState('image/jpg');
+  let [imgData, setImgData] = useState(MY_PIC_DATA);
+
+  // GET IMAGE FROM GALLERY
+  const imgFromGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      includeBase64: true,
+    })
+      .then((image) => {
+        setImgData(image.data);
+      })
+      .catch((err) => {
+        alert('Canceled by user', err);
+      });
+  };
+
+  // GET IMAGE FROM CAMERA
+  const imgFromCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+      includeBase64: true,
+    })
+      .then((image) => {
+        setImgData(image.data);
+      })
+      .catch((err) => {
+        alert('Canceled by user', err);
+      });
+  };
 
   let t_amount = quantity * unitRate;
 
@@ -45,9 +85,10 @@ const AddStock = ({navigation, stock}) => {
     db.transaction(function (txn) {
       // INSERT ITEM INTO TABLE
       txn.executeSql(
-        'INSERT INTO stock_table (date, item_name, item_color, item_size, quantity, unit, unit_rate, total_amount, description) values (?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO stock_table (date, img_data, item_name, item_color, item_size, quantity, unit, unit_rate, total_amount, description) values (?,?,?,?,?,?,?,?,?,?)',
         [
           date,
+          imgData,
           itemName,
           itemColor,
           itemSize,
@@ -81,11 +122,47 @@ const AddStock = ({navigation, stock}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, marginHorizontal: 20, marginTop: 20}}>
           <ScrollView keyboardShouldPersistTaps="handled">
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
+              {/* image from gallery */}
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  // marginHorizontal: 45,
+                }}>
+                <Image
+                  source={{
+                    uri: `data:${imgMime};base64,${imgData}`,
+                  }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: 50,
+                  }}
+                  // resizeMode="contain"
+                />
+
+                <View style={{marginRight: 20}}>
+                  <CustomBtn
+                    title="Select image from Gallery"
+                    onBtnPress={imgFromGallery}
+                    style={{width: '100%'}}
+                  />
+
+                  <CustomBtn
+                    title="Take photo"
+                    onBtnPress={imgFromCamera}
+                    style={{width: '100%'}}
+                  />
+                </View>
+              </View>
               {/* item name */}
               <CustomInput
                 placeholder="Enter item Name"

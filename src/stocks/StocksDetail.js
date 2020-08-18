@@ -6,6 +6,7 @@ import {
   RefreshControl,
   FlatList,
   ScrollView,
+  Image,
 } from 'react-native';
 import {connect} from 'react-redux';
 
@@ -15,6 +16,7 @@ let db = openDatabase({name: 'stockDatabase.db'});
 
 const StockDetail = ({stock, setStock, setResetState}) => {
   const [refreshing, setRefreshing] = useState(false);
+  let [imgMime, setImgMime] = useState('image/jpg');
 
   // Refreshed controle
   const onRefresh = React.useCallback(() => {
@@ -55,6 +57,14 @@ const StockDetail = ({stock, setStock, setResetState}) => {
           }}>
           <Text>Item Id = {item.item_id}</Text>
           <Text style={{padding: 2}}>{item.date}</Text>
+        </View>
+        <View>
+          <Image
+            source={{
+              uri: `data:${imgMime};base64,${item.img_data}`,
+            }}
+            style={{width: 250, height: 300, borderRadius: 50}}
+          />
         </View>
 
         {/* ITEM NAME */}
